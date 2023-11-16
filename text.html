@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Compose AI</title>
+    <style>
+        body {
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cpath d='M 160 0 L 0 0 0 160' fill='none' stroke='%23eeeeee' stroke-width='2'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 160px 160px;
+            background-color: #fffff4;
+        }
+
+        textarea {
+            width: 1000px;
+            height: 500px;
+            font-size: 18px;
+            padding: 20px;
+            border-top-left-radius: 28px;
+            border-top-right-radius: 28px;
+            /* border-bottom: 0px solid #ccc; */
+            resize: none;
+            background-color: #faf8ff;
+            /* Added background-color property */
+        }
+
+        .center {
+            text-align: center;
+            margin-top: 40px;
+            margin-bottom: 0px;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: -5px;
+            width: 1044px;
+            /* Added width property */
+            margin-left: auto;
+            /* Added margin-left property */
+            margin-right: auto;
+            /* Added margin-right property */
+
+        }
+
+        .button {
+            flex: 1;
+            height: 34px;
+            font-size: 18px;
+            color: #fff;
+            border-radius: 0;
+            text-align: center;
+            line-height: 34px;
+            cursor: pointer;
+        }
+
+        .save-button {
+            background-color: #408bff;
+            border-bottom-left-radius: 28px;
+        }
+
+        .clear-button {
+            background-color: #6092ff;
+        }
+
+        .copy-button {
+            background-color: #6e9cff;
+            border-bottom-right-radius: 28px;
+        }
+
+        .extension-bar {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #404040;
+            padding: 10px;
+            box-sizing: border-box;
+            z-index: 9999;
+        }
+
+        .extension-bar-text {
+            color: #fff;
+            font-size: 18px;
+            font-weight: bold;
+            flex-grow: 1;
+            margin-right: 30px;
+        }
+
+        .extension-bar-button {
+            margin-right: 30px;
+            width: 200px;
+            background-color: #eca603;
+            color: #505050;
+            font-weight: bold;
+            text-align: center;
+            padding: 5px;
+            border-radius: 8px;
+        }
+
+        .extension-bar-close {
+            color: red;
+            position: fixed;
+            top: 6px;
+            right: 16px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+    </style>
+    <script>
+        function handleTabKey(event) {
+            if (event.keyCode === 9) {
+                event.preventDefault();
+                var textarea = event.target;
+                var start = textarea.selectionStart;
+                var end = textarea.selectionEnd;
+                textarea.value = textarea.value.substring(0, start) + "    " + textarea.value.substring(end);
+                textarea.selectionStart = textarea.selectionEnd = start + 4;
+            }
+        }
+        window.addEventListener('DOMContentLoaded', function () {
+            var textarea = document.querySelector('textarea');
+            textarea.addEventListener('blur', function () {
+                textarea.focus();
+            });
+            textarea.focus();
+
+            // var composeIcon = document.querySelector('.compose-icon');
+            // composeIcon.addEventListener('mouseover', function () {
+            //     textarea.blur();
+            // });
+
+            // Retrieve saved text from localStorage
+            var savedText = localStorage.getItem('savedText');
+            if (savedText) {
+                textarea.value = savedText;
+            }
+
+            // Save text to localStorage on save button click or Ctrl+S key press
+            var saveButton = document.querySelector('.save-button');
+            saveButton.addEventListener('click', function () {
+                localStorage.setItem('savedText', textarea.value);
+            });
+            document.addEventListener('keydown', function (event) {
+                if ((event.ctrlKey || event.metaKey) && event.key === 's') {
+                    event.preventDefault();
+                    localStorage.setItem('savedText', textarea.value);
+                }
+            });
+            var clearButton = document.querySelector('.clear-button');
+            clearButton.addEventListener('click', function () {
+                // Prompt confirmation box
+                var confirmation = confirm("Are you sure you want to clear the stored text?");
+                if (confirmation) {
+                    // Clear the saved text from localStorage
+                    localStorage.removeItem('savedText');
+                    // Clear the text from the textarea
+                    textarea.value = '';
+                }
+            });
+            var copyButton = document.querySelector('.copy-button');
+            copyButton.addEventListener('click', function () {
+                textarea.select();
+                document.execCommand('copy');
+                // textarea.setSelectionRange(0, 0); // Deselect the textarea
+            });
+        });
+
+
+        // var extensionBar = document.querySelector('.extension-bar');
+
+    </script>
+</head>
+
+<body>
+    <a href="https://github.com/PACHAKUTlQ/AITextEditor" class="github-corner" aria-label="View source on GitHub"><svg
+            width="80" height="80" style="fill:#000;color:#fff;position:absolute;top:0;border:0;right:0"
+            aria-hidden="true" viewBox="0 0 250 250">
+            <path d="m0 0 115 115h15l12 27 108 108V0Z"></path>
+            <path
+                d="M128.3 109c-14.5-9.3-9.3-19.4-9.3-19.4 3-6.9 1.5-11 1.5-11-1.3-6.6 2.9-2.3 2.9-2.3 3.9 4.6 2.1 11 2.1 11-2.6 10.3 5.1 14.6 8.9 15.9"
+                fill="currentColor" style="transform-origin:130px 106px" class="octo-arm"></path>
+            <path
+                d="M115 115c-.1.1 3.7 1.5 4.8.4l13.9-13.8c3.2-2.4 6.2-3.2 8.5-3-8.4-10.6-14.7-24.2 1.6-40.6 4.7-4.6 10.2-6.8 15.9-7 .6-1.6 3.5-7.4 11.7-10.9 0 0 4.7 2.4 7.4 16.1 4.3 2.4 8.4 5.6 12.1 9.2 3.6 3.6 6.8 7.8 9.2 12.2 13.7 2.6 16.2 7.3 16.2 7.3-3.6 8.2-9.4 11.1-10.9 11.7-.3 5.8-2.4 11.2-7.1 15.9-16.4 16.4-30 10-40.6 1.6.2 2.8-1 6.8-5 10.8L141 136.5c-1.2 1.2.6 5.4.8 5.3Z"
+                fill="currentColor" class="octo-body"></path>
+        </svg></a>
+    <style>
+        .github-corner:hover .octo-arm {
+            animation: octocat-wave 560ms ease-in-out
+        }
+
+        @keyframes octocat-wave {
+
+            0%,
+            100% {
+                transform: rotate(0)
+            }
+
+            20%,
+            60% {
+                transform: rotate(-25deg)
+            }
+
+            40%,
+            80% {
+                transform: rotate(10deg)
+            }
+        }
+
+        @media (max-width: 500px) {
+            .github-corner:hover .octo-arm {
+                animation: none
+            }
+
+            .github-corner .octo-arm {
+                animation: octocat-wave 560ms ease-in-out
+            }
+        }
+    </style>
+
+    <div class="center">
+        <!-- <img src="https://welcome.compose.ai/_next/image?url=%2Fcompose_ai_light.png&w=640&q=75" alt="Compose AI"> -->
+        <img class="compose-icon" onmouseover="document.querySelector('.extension-bar').style.display = 'block';"
+            src="data:image/png;base64,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">
+    </div>
+    <div class="center">
+        <textarea placeholder="Enter your text here..." onkeydown="handleTabKey(event)" autofocus></textarea>
+    </div>
+    <div class="center button-container">
+        <div class="button save-button">Save</div>
+        <div class="button clear-button">Clear</div>
+        <div class="button copy-button">Copy</div>
+    </div>
+    <!-- Extension bar -->
+    <div class="extension-bar">
+        <span class="extension-bar-text">Haven't got Compose AI extension yet?&emsp;Get it here:</span>
+        <a href="https://chrome.google.com/webstore/detail/compose-ai-ai-powered-wri/ddlbpiadoechcolndfeaonajmngmhblj"
+            target="https://chrome.google.com/webstore/detail/compose-ai-ai-powered-wri/ddlbpiadoechcolndfeaonajmngmhblj">
+            <button class="extension-bar-button">Chrome extension market</button></a>
+        <a href="https://www.crxsoso.com/webstore/detail/ddlbpiadoechcolndfeaonajmngmhblj"
+            target="https://www.crxsoso.com/webstore/detail/ddlbpiadoechcolndfeaonajmngmhblj">
+            <button class="extension-bar-button">Mirror</button>
+        </a>
+        <a href="https://raw.githubusercontent.com/PACHAKUTlQ/AITextEditor/main/Compose_AI.crx"
+            target="https://raw.githubusercontent.com/PACHAKUTlQ/AITextEditor/main/Compose_AI.crx"><button
+                class="extension-bar-button">Download
+                packed</button></a>
+        <a class="extension-bar-close" onclick="document.querySelector('.extension-bar').style.display = 'none';">×</a>
+    </div>
+</body>
+
+</html>
